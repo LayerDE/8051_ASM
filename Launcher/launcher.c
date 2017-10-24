@@ -5,6 +5,7 @@
 #include <string.h>
 #include <dlfcn.h>
 #include <stdio.h>
+#include "../Global/API_header.h"
 typedef bool (*loadHEX_func)(uint8_t*,char*);
 typedef void (*exec_func)();
 
