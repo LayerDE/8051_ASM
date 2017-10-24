@@ -18,6 +18,7 @@ typedef void (*exec_func)();
 #define bit_clr_8(X,n) X&=0xFF^(0x01<<(n))
 
 API_HIDE_var uint8_t EEPROM[EEPROM_SIZE];
+API_HIDE_var uint8_t ext_MEM[ext_MEM_SIZE];
 API_HIDE_var uint8_t extPort[4] = { 0x00,0x00,0x00,0x00 };
 API_HIDE_var uint8_t RAM[RAM_SIZE+SFR_SIZE];
 API_HIDE_var uint8_t *SFR=&RAM[SFR_SIZE];
