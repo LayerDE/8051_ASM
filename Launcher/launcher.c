@@ -27,7 +27,7 @@ uint8_t Char2Int(char hex)
 int main(){
 	uint8_t eeprom_test[64*1024];
 	uint8_t* test_eeprom=eeprom_test;
-	void* file_reader = dlopen("./file_reader.so",RTLD_LAZY);
+	void* file_reader = dlopen("./hex_reader.so",RTLD_LAZY);
 	printf("debug\n");
 	if(((loadHEX_func)dlsym(file_reader,"read_IntelHEX"))(test_eeprom,"../tests/test2.hex"))
 		printf("loading complete\n");
