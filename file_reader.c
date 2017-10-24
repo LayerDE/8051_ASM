@@ -19,8 +19,8 @@ typedef bool (*init_data)();
 typedef void (*read_data)(uint16_t, uint8_t*, uint32_t);
 typedef void (*write_data)(uint16_t, uint8_t*, uint32_t);
 typedef void (*close_data)();
-FILE out_file;
-FILE in_file;
+//FILE out_file;
+//FILE in_file;
 init_data icurrent;
 read_data rcurrent;
 write_data wcurrent;
@@ -53,7 +53,7 @@ API_HIDE void write_array(uint16_t address, uint8_t* data, uint32_t lenght){
 	
 }
 
-
+/*
 API_SHOW bool set_infile(char* path){
 	if(in_file=path(file,"rb")) return true;
 	return false;
@@ -63,7 +63,7 @@ API_SHOW bool set_outfile(char* path){
 	wcurrent=}
 	return false;
 }
-
+*/
 API_SHOW bool read_IntelHEX(void* ROM,char* file){
 	FILE* in_file;
 	uint8_t parsed,lenght,checksum,mode = 0;
@@ -145,7 +145,7 @@ API_SHOW void write_IntelHEX(void* ROM,void* RAM,char* file){
 API_SHOW void clean_IntelHEX(char* file){
 
 }
-
+/*
 API_SHOW bool load(char* file, char output){
 	uint8_t parsed,lenght,lenght_count,checksum,mode = 0;
 	uint16_t address;
@@ -225,5 +225,5 @@ API_SHOW bool load(char* file, char output){
 		}
 	}
 }
-
+*/
 API_SHOW void Bin2IntelHEX(){}

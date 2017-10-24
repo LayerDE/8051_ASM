@@ -7,7 +7,6 @@
 #include <stdio.h>
 typedef bool (*loadHEX_func)(uint8_t*,char*);
 typedef void (*exec_func)();
-typedef void (*exec_func)();
 
 char Int2Char(uint8_t parse) 
 {
