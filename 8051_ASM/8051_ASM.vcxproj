@@ -145,6 +145,7 @@
     <ClCompile Include="8051_ASM.c" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\Global\API_header.h" />
     <ClInclude Include="8051_ADRESSES.h" />
     <ClInclude Include="8051_ASM.h" />
     <ClInclude Include="8051_ASM_list.h" />

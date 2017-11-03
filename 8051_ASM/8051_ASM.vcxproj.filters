@@ -32,5 +32,8 @@
     <ClInclude Include="8051_OPCODE_2_C-COMMAND.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="..\Global\API_header.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

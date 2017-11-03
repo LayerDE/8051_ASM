@@ -144,6 +144,9 @@
   <ItemGroup>
     <ClCompile Include="HEX_reader.c" />
   </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\Global\API_header.h" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
