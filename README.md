@@ -1,3 +1,4 @@
+Rebuild and Rework to get my brain in intel x51 again
 #8051 microcontroller emulator
 
 ###Compile
