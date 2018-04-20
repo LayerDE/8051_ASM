@@ -1,16 +1,61 @@
-#define bit_opperation(func,address) if (address & 0x80) {switch(address&0xF8){case PSW:func (psw, address & 0x07);refresh_Rn;break;default:func (SFR[address & 0xF8], address & 0x07);break;}}else{func (RAM[(address >> 3)+0x20], address & 0x07);}
+#define bit_opperation(func,address) if (address & 0x80) {\
+		switch(address&0xF8){\
+			case PSW:\
+				func (psw, address & 0x07);\
+				refresh_Rn;\
+				break;\
+			default:\
+				func (SFR[address & 0xF8], address & 0x07);\
+				break;\
+		}\
+	}\
+	else{\
+		func (RAM[(address >> 3)+0x20], address & 0x07);\
+	}
 #define set_Bit(address) bit_opperation(bit_set, address)
 #define clr_Bit(address) bit_opperation(bit_clr_8, address)
 #define not_Bit(address) bit_opperation(bit_not, address)
 
 #define refresh_Rn R = &RAM[(psw & 0x18) >> 3]
 #define carry_get get_Bit(CARRY)
-#define carry_set if(carry){set_Bit(CARRY);}else{clr_Bit(CARRY);}
-#define hcarry_set if(hcarry){set_Bit(HCARRY);}else{clr_Bit(HCARRY);}
-#define of_set if(overflow){set_Bit(OF);}else{clr_Bit(OF);}
+#define carry_set if(carry) {\
+		set_Bit(CARRY);\
+	}\
+	else{\
+		clr_Bit(CARRY);\
+	}
+#define hcarry_set if(hcarry) {\
+		set_Bit(HCARRY);\
+	}\
+	else {\
+		clr_Bit(HCARRY);\
+	}
+#define of_set if(overflow){\
+		set_Bit(OF);\
+	}\
+	else{\
+		clr_Bit(OF);\
+	}
 #define register_set carry_set hcarry_set of_set
-#define bit_asm_command(a,b,opp) if (get_Bit(a) opp get_Bit(b)) {set_Bit(a);}else { clr_Bit(a);}
-#define set_RAM(address,value) if(address & 0x80) {switch(address){case PSW:psw=value;refresh_Rn;break;default:SFR[address] = value;}}else{RAM[address]=value;}
+#define bit_asm_command(a,b,opp) if (get_Bit(a) opp get_Bit(b)) {\
+		set_Bit(a);\
+	}\
+	else {\
+		clr_Bit(a);\
+	}
+#define set_RAM(address,value) if(address & 0x80) {\
+		switch(address){\
+			case PSW:\
+				psw=value;\
+				refresh_Rn;\
+				break;\
+			default:\
+				SFR[address] = value;\
+		}\
+	}\
+	else{\
+		RAM[address]=value;\
+	}
 #define get_stack pc = RAM[stack - 1] <<8| (RAM[stack]);stack -= 2
 //#define set_stack(a) *(uint16_t *)&RAM[stack]=pc a;stack+=2
 #define set_stack(a) RAM[++stack] = (pc a)<<8;RAM[++stack] = pc a; 

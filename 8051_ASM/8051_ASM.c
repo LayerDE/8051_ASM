@@ -47,7 +47,7 @@ API_HIDE_var uint8_t interrupt_flags = 0;
 
 API_HIDE void time(uint8_t wait) 
 {
-	for (;wait > 0;wait--) {
+	while (wait--) {
 		if (tcon & 0x04) {
 			switch (tmod & 0x07) {
 			case 0x01:
@@ -101,6 +101,7 @@ API_HIDE void time(uint8_t wait)
 	}
 }
 /*Create interpreter functions*/
+//Fast Code
 #define ASM_COMMAND(opcode,command) API_HIDE void func_##opcode(){command; }
 #define seperator
 #include "8051_ASM_list.h"
@@ -115,22 +116,23 @@ API_HIDE_var const exec_func pointers[256]={
 #undef seperator
 #undef ASM_COMMAND
 };
+//end Fast Code
 
 API_SHOW void write_EEPROM(uint16_t address, uint8_t *data, uint32_t lenght) 
 {
-	for (lenght += address;address<lenght;address++, data++) {
+	for (lenght += address; address < lenght; address++, data++) {
 		EEPROM[address] = *data;
 	}
 }
 API_SHOW void write_RAM(uint8_t address, uint8_t *data, uint16_t lenght) 
 {
-	for (lenght += address;address<lenght;address++, data++) {
+	for (lenght += address; address < lenght; address++, data++) {
 		RAM[address] = *data;
 	}
 }
 API_SHOW void stop_interpreter()
 {
-	run=false;
+	run = false;
 }
 
 API_SHOW void reset() {/*Initialization of the SFR*/
@@ -152,62 +154,51 @@ API_SHOW void set_Port(uint8_t n, uint8_t value)
 	extPort[n] = value;
 }
 
+#define INTERPRET pointers[EEPROM[pc++]]();\
+	if (interrupt_flags) {\
+		if (get_Bit(EA_FLAG))\
+			for (uint8_t a = 0; a < 5; a++)\
+				if (bit_address(interrupt_flags, a)) {\
+					set_stack();\
+					pc = 0x03 + a * 0x08;\
+					set_Bit(INT_FLAG);\
+				}\
+		interrupt_flags = 0;\
+	}
+
 API_SHOW void interpret_stepping(int steps)
 {
 	while(steps--){
-		pointers[EEPROM[pc++]]();
-		if (interrupt_flags) {
-			if (get_Bit(EA_FLAG)) {
-				for (uint8_t a = 0;a < 5;a++) {
-					if (bit_address(interrupt_flags, a)) {
-						set_stack();
-						pc = 0x03 + a * 0x08;
-						set_Bit(INT_FLAG);
-					}
-				}
-			}
-			interrupt_flags = 0;
+		INTERPRET;
 		}
 	}
 }
 API_SHOW void run_interpreter()
 {
-	run=true;
+	run = true;
 	while(run){
-		pointers[EEPROM[pc++]]();
-		if (interrupt_flags) {
-			if (get_Bit(EA_FLAG)) {
-				for (uint8_t a = 0;a < 5;a++) {
-					if (bit_address(interrupt_flags, a)) {
-						set_stack();
-						pc = 0x03 + a * 0x08;
-						set_Bit(INT_FLAG);
-					}
-				}
-			}
-			interrupt_flags = 0;
-		}
+		INTERPRET;
 	}
 }
 
 
 API_SHOW uint8_t* dump_RAM(uint8_t address, uint8_t lenght,bool sfr){
-	uint8_t* ptr=malloc(lenght);
+	uint8_t* ptr = malloc(lenght);
 	if(sfr){
-		if(address>RAM_SIZE-SFR_SIZE)
-			memcpy(ptr,&SFR[address],lenght);
+		if(address > RAM_SIZE - SFR_SIZE)
+			memcpy(ptr, &SFR[address], lenght);
 		else{
-			memcpy(ptr,&RAM[address],RAM_SIZE-address);
-			memcpy(ptr+RAM_SIZE-address,&SFR[RAM_SIZE-SFR_SIZE],lenght+address-RAM_SIZE);
+			memcpy(ptr, &RAM[address],RAM_SIZE - address);
+			memcpy(ptr + RAM_SIZE - address, &SFR[RAM_SIZE - SFR_SIZE], lenght + address - RAM_SIZE);
 		}
 	}
-	else memcpy(ptr,&RAM[address],lenght);
+	else memcpy(ptr, &RAM[address], lenght);
 	return ptr;
 }
 
 API_SHOW uint8_t* dump_EEPROM(uint16_t address, uint16_t lenght){
-	uint8_t* ptr=malloc(lenght);
-	memcpy(ptr,&EEPROM[address],lenght%(EEPROM_SIZE-address));
+	uint8_t* ptr = malloc(lenght);
+	memcpy(ptr, &EEPROM[address], lenght % (EEPROM_SIZE - address));
 }
 
 API_SHOW uint16_t get_pc(){
